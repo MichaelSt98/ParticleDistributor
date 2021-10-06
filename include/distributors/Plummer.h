@@ -21,8 +21,13 @@ public:
 
     Plummer(unsigned long seed = 0UL, int numParticles=100000);
 
-    Particle next();
-    static std::string getName() { return std::string{ "plummer" }; };
+    Particle next() override;
+
+    static constexpr const char* name = "plummer";
+    const std::string& getName() const override {
+        static std::string name_ { name };
+        return name_;
+    }
 
 };
 

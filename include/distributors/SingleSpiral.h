@@ -15,8 +15,14 @@ public:
 
     SingleSpiral(unsigned long seed = 0UL);
 
-    Particle next();
-    static std::string getName() { return std::string{ "single_spiral" }; };
+    Particle next() override;
+
+    static constexpr const char* name = "single_spiral";
+
+    const std::string& getName() const override {
+        static std::string name_ { name };
+        return name_;
+    }
 };
 
 

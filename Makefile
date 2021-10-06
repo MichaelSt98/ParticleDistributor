@@ -50,6 +50,8 @@ resources: directories
 directories:
 	@mkdir -p $(TARGETDIR)
 	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(RESDIR)
+
 
 #clean objects
 clean:

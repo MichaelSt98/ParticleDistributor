@@ -28,7 +28,8 @@ public:
     virtual ~Distributor() {};
 
     virtual Particle next() = 0;
-    //static std::string getName() { return std::string{ "distributor" }; };
+    virtual const std::string& getName() const = 0;
+
 };
 
 
