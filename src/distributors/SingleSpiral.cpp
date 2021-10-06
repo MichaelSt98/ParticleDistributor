@@ -8,7 +8,7 @@ SingleSpiral::SingleSpiral(unsigned long seed) : Distributor(seed) {
 
 }
 
-Particle SingleSpiral::next() {
+Particle SingleSpiral::next(int i) {
 
     Particle particle;
     double M = 1;

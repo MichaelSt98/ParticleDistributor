@@ -15,7 +15,7 @@ public:
 
     SingleSpiral(unsigned long seed = 0UL);
 
-    Particle next() override;
+    Particle next(int i=0) override;
 
     static constexpr const char* name = "single_spiral";
 

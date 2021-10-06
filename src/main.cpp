@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     cxxopts::Options options("ParticleDistributor",
                              "Generating HDF5 file with initial particle distribution for N-Body and SPH simulation.");
 
-    std::vector<std::string> availableDistributionTypes = { Plummer::name, SingleSpiral::name };
+    std::vector<std::string> availableDistributionTypes = { Plummer::name, SingleSpiral::name, Kepler::name };
     std::stringstream availableDistributionTypesHelp;
 
     availableDistributionTypesHelp << "(";

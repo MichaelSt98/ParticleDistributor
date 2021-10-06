@@ -21,7 +21,7 @@ public:
 
     Plummer(unsigned long seed = 0UL, int numParticles=100000);
 
-    Particle next() override;
+    Particle next(int i=0) override;
 
     static constexpr const char* name = "plummer";
     const std::string& getName() const override {

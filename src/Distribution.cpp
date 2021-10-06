@@ -15,8 +15,12 @@ Distribution::Distribution(int numParticles, DistributionType distributionType, 
         case DistributionType::singleSpiral: {
             distributor = new SingleSpiral(seed);
         } break;
+        case DistributionType::kepler: {
+            distributor = new Kepler(seed, numParticles);
+        } break;
         default:
             printf("not implemented!\n");
+            exit(0);
     }
 
     std::cout << "Selected distribution type: " << distributor->getName() << std::endl;
@@ -31,7 +35,7 @@ Distribution::~Distribution() {
 
 void Distribution::generate() {
     for (int i=0; i<numParticles; i++) {
-        particles.push_back(distributor->next());
+        particles.push_back(distributor->next(i));
     }
 }
 

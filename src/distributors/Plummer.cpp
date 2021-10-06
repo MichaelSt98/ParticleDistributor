@@ -13,7 +13,7 @@ Plummer::Plummer(unsigned long seed, int numParticles) : Distributor(seed), numP
 
 }
 
-Particle Plummer::next() {
+Particle Plummer::next(int i) {
 
     Particle particle;
 

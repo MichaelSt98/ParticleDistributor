@@ -2,9 +2,10 @@
 #define PARTICLEDISTRIBUTOR_DISTRIBUTION_H
 
 #include "Particle.h"
-//#include "Distributor.h"
+
 #include "distributors/Plummer.h"
 #include "distributors/SingleSpiral.h"
+#include "distributors/Kepler.h"
 
 #include <vector>
 #include <string>
@@ -12,7 +13,7 @@
 #include <iostream>
 
 enum class DistributionType {
-    plummer, singleSpiral
+    plummer, singleSpiral, kepler
 };
 
 class Distribution {

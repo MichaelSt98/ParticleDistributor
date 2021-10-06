@@ -1,7 +1,6 @@
 #ifndef PARTICLEDISTRIBUTOR_DISTRIBUTOR_H
 #define PARTICLEDISTRIBUTOR_DISTRIBUTOR_H
 
-//#include "distributors/Plummer.h"
 #include "Particle.h"
 
 #include <random>
@@ -27,7 +26,7 @@ public:
     Distributor(unsigned long seed = 0UL);
     virtual ~Distributor() {};
 
-    virtual Particle next() = 0;
+    virtual Particle next(int i=0) = 0;
     virtual const std::string& getName() const = 0;
 
 };
