@@ -13,7 +13,7 @@ Distribution::Distribution(int numParticles, DistributionType distributionType, 
             distributor = new Plummer(seed, numParticles);
         } break;
         case DistributionType::singleSpiral: {
-            distributor = new SingleSpiral(seed);
+            distributor = new SingleSpiral(seed, numParticles);
         } break;
         case DistributionType::kepler: {
             distributor = new Kepler(seed, numParticles);

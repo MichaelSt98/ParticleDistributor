@@ -1,6 +1,6 @@
 #include "../../include/distributors/SingleSpiral.h"
 
-SingleSpiral::SingleSpiral(unsigned long seed) : Distributor(seed) {
+SingleSpiral::SingleSpiral(unsigned long seed, int numParticles) : Distributor(seed), numParticles(numParticles) {
 
     rndRCube = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
     rndPhi = std::uniform_real_distribution<double>(0., 2.*M_PI);
@@ -21,7 +21,7 @@ Particle SingleSpiral::next(int i) {
     phi = rndPhi(gen);
     theta = acos(rndCosTheta(gen));
 
-    vmag = sqrt(G*M*r*r/(R*R*R));
+    vmag = sqrt(G*M*r*r/(2.*R*R*R));
 
     particle.pos = vec3{ r * cos(phi) * sin(theta),
                          r * sin(phi) * sin(theta),
@@ -31,7 +31,7 @@ Particle SingleSpiral::next(int i) {
                          -vmag * cos(phi),
                          0.};
 
-    particle.mass = M;
+    particle.mass = M/numParticles;
 
     //std::cout << "Particle.pos: " << particle.pos;
 

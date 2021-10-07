@@ -7,13 +7,14 @@ class SingleSpiral : public Distributor {
 
 private:
 
+    int numParticles;
     std::uniform_real_distribution<double> rndRCube; //(0., std::nextafter(1., std::numeric_limits<double>::max()));
     std::uniform_real_distribution<double> rndPhi; //(0., 2.*M_PI);
     std::uniform_real_distribution<double> rndCosTheta; //(-1., std::nextafter(1., std::numeric_limits<double>::max()));
 
 public:
 
-    SingleSpiral(unsigned long seed = 0UL);
+    SingleSpiral(unsigned long seed = 0UL, int numParticles=100000);
 
     Particle next(int i=0) override;
 
