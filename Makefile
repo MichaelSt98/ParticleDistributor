@@ -21,7 +21,7 @@ OBJEXT      := o
 
 #Flags, Libraries and Includes
 CXXFLAGS    := --std=c++11#-Xpreprocessor -fopenmp #-lomp -Wall #-fopenmp -Wall -O3 -g
-LIB         := -lhdf5#-fopenmp -lm -larmadillo
+LIB         := -lhdf5 -lboost_serialization -lboost_filesystem -lboost_system#-fopenmp -lm -larmadillo
 INC         := -I$(INCDIR) -I/usr/local/Headeronly/HighFive/include -I/usr/local/Headeronly/cxxopts  -I/usr/local/include
 INCDEP      := -I$(INC)
 
