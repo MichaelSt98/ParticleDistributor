@@ -1,8 +1,14 @@
 #include "../../include/distributors/Kepler.h"
 
-Kepler::Kepler(unsigned long seed, int numParticles, double width) : Distributor(seed), numParticles(numParticles) {
+Kepler::Kepler(unsigned long seed, int numParticles) : Distributor(seed), numParticles(numParticles) {
 
-    distribution = std::uniform_real_distribution<double>(1. - width, std::nextafter(1., std::numeric_limits<double>::max()));
+    confP = ConfigParser("config/Kepler.info");
+    std::string description = confP.getVal<std::string>("description");
+    double diskWidth = confP.getVal<double>("diskWidth");
+
+    std::cout << "Description: " << description << std::endl;
+
+    distribution = std::uniform_real_distribution<double>(1. - diskWidth, std::nextafter(1., std::numeric_limits<double>::max()));
     thetaDistribution = std::uniform_real_distribution<double>(0.0, 2 * M_PI);
 
 }

@@ -1,0 +1,5 @@
+;description of Kepler distributor
+description "Central star, small bodies orbiting with kepler velocity."
+
+;width of disk, disk from (1-width):1
+diskWidth 0.2

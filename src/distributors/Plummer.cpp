@@ -3,6 +3,11 @@
 // http://articles.adsabs.harvard.edu/pdf/1974A%26A....37..183A
 Plummer::Plummer(unsigned long seed, int numParticles) : Distributor(seed), numParticles(numParticles) {
 
+    confP = ConfigParser("config/Plummer.info");
+    std::string description = confP.getVal<std::string>("description");
+
+    std::cout << "Description: " << description << std::endl;
+
     rnd1 = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
     rnd2 = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
     rnd3 = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));

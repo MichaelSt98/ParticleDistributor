@@ -2,9 +2,11 @@
 #define PARTICLEDISTRIBUTOR_DISTRIBUTOR_H
 
 #include "Particle.h"
+#include "config_parser.h"
 
 #include <random>
 #include <iostream>
+#include <string>
 
 //#define _USE_MATH_DEFINES
 #include <cmath>
@@ -20,6 +22,7 @@ protected:
     std::mt19937 gen;
     //const double G = 6.67408e-11;
     const double G = 1.;
+    ConfigParser confP;
 
 public:
 

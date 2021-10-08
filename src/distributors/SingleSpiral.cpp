@@ -2,6 +2,11 @@
 
 SingleSpiral::SingleSpiral(unsigned long seed, int numParticles) : Distributor(seed), numParticles(numParticles) {
 
+    confP = ConfigParser("config/SingleSpiral.info");
+    std::string description = confP.getVal<std::string>("description");
+
+    std::cout << "Description: " << description << std::endl;
+
     rndRCube = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
     rndPhi = std::uniform_real_distribution<double>(0., 2.*M_PI);
     rndCosTheta =  std::uniform_real_distribution<double>(-1., std::nextafter(1., std::numeric_limits<double>::max()));
