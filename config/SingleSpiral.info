@@ -1,2 +1,8 @@
 ;description of SingleSpiral distributor
 description "Sphere rotating around z-axis, developing to a spiral (galaxy)."
+
+;radius of sphere
+R 1.
+
+;total mass
+M 1.

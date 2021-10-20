@@ -7,6 +7,9 @@ SingleSpiral::SingleSpiral(unsigned long seed, int numParticles) : Distributor(s
 
     std::cout << "Description: " << description << std::endl;
 
+    R = confP.getVal<double>("R");
+    M = confP.getVal<double>("M");
+
     rndRCube = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
     rndPhi = std::uniform_real_distribution<double>(0., 2.*M_PI);
     rndCosTheta =  std::uniform_real_distribution<double>(-1., std::nextafter(1., std::numeric_limits<double>::max()));
@@ -16,8 +19,6 @@ SingleSpiral::SingleSpiral(unsigned long seed, int numParticles) : Distributor(s
 Particle SingleSpiral::next(int i) {
 
     Particle particle;
-    double M = 1;
-    double R = 1;
 
     double r, phi, theta, vmag;
 

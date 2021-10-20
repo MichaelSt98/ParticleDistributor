@@ -1,5 +1,14 @@
 ;description of Kepler distributor
 description "Central star, small bodies orbiting with kepler velocity."
 
-;width of disk, disk from (1-width):1
+;outer radius of disk
+R 1.
+
+;width of disk, disk from (R-width):R
 diskWidth 0.2
+
+;mass of central star
+M 1.
+
+; mass of orbiting stars
+m .0001

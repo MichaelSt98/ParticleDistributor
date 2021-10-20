@@ -26,8 +26,6 @@ int main(int argc, char *argv[]) {
     options.set_width(100);
     options.add_options()
             ("N,N-particles", "Number of particles", cxxopts::value<int>()->default_value("1000000"))
-            ("M,M-system", "Total mass distributed in the system", cxxopts::value<double>()->default_value("1."))
-            ("R,R-sphere", "Radius of spheres serving as initial galaxies", cxxopts::value<double>()->default_value("1."))
             ("s,seed", "Use given random seed", cxxopts::value<unsigned long>()->default_value("0"))
             ("f,filename", "File name", cxxopts::value<std::string>()->default_value("test"))
             ("d,distributionType", availableDistributionTypesHelp.str(), cxxopts::value<int>()->default_value("0"))
@@ -43,8 +41,6 @@ int main(int argc, char *argv[]) {
     std::string filename = opts["filename"].as<std::string>();
 
     const int numParticles { opts["N-particles"].as<int>() };
-    const double M { opts["M-system"].as<double>() };
-    const double R { opts["R-sphere"].as<double>() };
 
     DistributionType distributionType = DistributionType(opts["distributionType"].as<int>());
     unsigned long seed = opts["seed"].as<unsigned long>();

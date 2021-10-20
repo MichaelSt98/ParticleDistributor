@@ -8,6 +8,8 @@ Plummer::Plummer(unsigned long seed, int numParticles) : Distributor(seed), numP
 
     std::cout << "Description: " << description << std::endl;
 
+    M = confP.getVal<double>("M");
+
     rnd1 = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
     rnd2 = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
     rnd3 = std::uniform_real_distribution<double>(0., std::nextafter(1., std::numeric_limits<double>::max()));
@@ -21,10 +23,6 @@ Plummer::Plummer(unsigned long seed, int numParticles) : Distributor(seed), numP
 Particle Plummer::next(int i) {
 
     Particle particle;
-
-    double M = 1.;
-    double G = 1.;
-    double R = 1.;
 
     double r = pow(pow(rnd1(gen), -2/3.) - 1, -1/2.);
 

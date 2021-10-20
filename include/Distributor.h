@@ -26,7 +26,7 @@ protected:
 
 public:
 
-    Distributor(unsigned long seed = 0UL);
+    Distributor(unsigned long seed);
     virtual ~Distributor() {};
 
     virtual Particle next(int i=0) = 0;

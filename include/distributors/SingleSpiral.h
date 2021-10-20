@@ -24,6 +24,10 @@ public:
         static std::string name_ { name };
         return name_;
     }
+
+private:
+    double M; // total mass
+    double R; // radius of sphere
 };
 
 

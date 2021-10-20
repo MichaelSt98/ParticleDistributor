@@ -8,7 +8,11 @@ Kepler::Kepler(unsigned long seed, int numParticles) : Distributor(seed), numPar
 
     std::cout << "Description: " << description << std::endl;
 
-    distribution = std::uniform_real_distribution<double>(1. - diskWidth, std::nextafter(1., std::numeric_limits<double>::max()));
+    R = confP.getVal<double>("R");
+    M = confP.getVal<double>("M");
+    m = confP.getVal<double>("m");
+
+    distribution = std::uniform_real_distribution<double>(R - diskWidth, std::nextafter(R, std::numeric_limits<double>::max()));
     thetaDistribution = std::uniform_real_distribution<double>(0.0, 2 * M_PI);
 
 }
@@ -17,10 +21,6 @@ Particle Kepler::next(int i) {
 
     Particle particle;
 
-    double M = 1.;
-    double G = 1.;
-
-    double mass = M/numParticles;
     double theta = thetaDistribution(gen);
     double r = distribution(gen);
 
@@ -34,7 +34,7 @@ Particle Kepler::next(int i) {
     }
     else {
         // mass
-        particle.mass = 0.01 * mass;
+        particle.mass = m;
         // position
         particle.pos = vec3{r * cos(theta), r * sin(theta), 0.};
         // velocity

@@ -1,2 +1,5 @@
 ;description of Plummer distributor
 description "Particles with same mass distributed according to the plummer model."
+
+;total mass
+M 1.

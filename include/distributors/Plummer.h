@@ -29,6 +29,8 @@ public:
         return name_;
     }
 
+private:
+    double M;
 };
 
 

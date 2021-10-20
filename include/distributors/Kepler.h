@@ -21,6 +21,10 @@ public:
         return name_;
     }
 
+private:
+    double R; // outer disk radius
+    double M; // mass of central star
+    double m; // mass of orbiting stars
 };
 
 
