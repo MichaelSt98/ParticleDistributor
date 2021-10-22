@@ -1,0 +1,11 @@
+;description of MultiplePlummer distributor
+description "Randomly arranged plummer spheres"
+
+;total mass for one plummer sphere
+M 1.
+
+;number of distributed plummer spheres
+numPlummerSpheres 5
+
+;quadratic box side length in which the center of each plummer sphere is randomized
+boxLength 25.

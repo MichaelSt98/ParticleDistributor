@@ -5,21 +5,8 @@
 
 class Plummer : public Distributor {
 
-private:
-
-    std::uniform_real_distribution<double> rnd1;
-    std::uniform_real_distribution<double> rnd2;
-    std::uniform_real_distribution<double> rnd3;
-    std::uniform_real_distribution<double> rnd4;
-    std::uniform_real_distribution<double> rnd5;
-    std::uniform_real_distribution<double> rnd6;
-    std::uniform_real_distribution<double> rnd7;
-
-    int numParticles;
-
 public:
-
-    Plummer(unsigned long seed = 0UL, int numParticles=100000);
+    Plummer(unsigned long seed, int numParticles);
 
     Particle next(int i=0) override;
 
@@ -29,8 +16,21 @@ public:
         return name_;
     }
 
-private:
+protected:
+    int numParticles;
+
+    // values read from config file
     double M;
+
+private:
+
+    std::uniform_real_distribution<double> rnd1;
+    std::uniform_real_distribution<double> rnd2;
+    std::uniform_real_distribution<double> rnd3;
+    std::uniform_real_distribution<double> rnd4;
+    std::uniform_real_distribution<double> rnd5;
+    std::uniform_real_distribution<double> rnd6;
+    std::uniform_real_distribution<double> rnd7;
 };
 
 

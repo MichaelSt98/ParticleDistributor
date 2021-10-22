@@ -10,7 +10,8 @@ int main(int argc, char *argv[]) {
     cxxopts::Options options("ParticleDistributor",
                              "Generating HDF5 file with initial particle distribution for N-Body and SPH simulation.");
 
-    std::vector<std::string> availableDistributionTypes = { Plummer::name, SingleSpiral::name, Kepler::name };
+    std::vector<std::string> availableDistributionTypes = { Plummer::name, SingleSpiral::name, Kepler::name,
+                                                            MultiplePlummer::name };
     std::stringstream availableDistributionTypesHelp;
 
     availableDistributionTypesHelp << "(";
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]) {
     options.add_options()
             ("N,N-particles", "Number of particles", cxxopts::value<int>()->default_value("1000000"))
             ("s,seed", "Use given random seed", cxxopts::value<unsigned long>()->default_value("0"))
-            ("f,filename", "File name", cxxopts::value<std::string>()->default_value("test"))
+            ("f,filename", "File name", cxxopts::value<std::string>())
             ("d,distributionType", availableDistributionTypesHelp.str(), cxxopts::value<int>()->default_value("0"))
             ("h,help", "Show this help");
 
@@ -38,16 +39,22 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    std::string filename = opts["filename"].as<std::string>();
+    DistributionType distributionType = DistributionType(opts["distributionType"].as<int>());
 
     const int numParticles { opts["N-particles"].as<int>() };
-
-    DistributionType distributionType = DistributionType(opts["distributionType"].as<int>());
     unsigned long seed = opts["seed"].as<unsigned long>();
 
     Distribution distribution(numParticles, distributionType, seed);
 
     distribution.generate();
+
+    std::string filename;
+    if (opts.count("filename")){
+        filename = opts["filename"].as<std::string>();
+    } else {
+        filename = distribution.getDistributionType();
+    }
+
     distribution.write2file(filename);
 
     return 0;

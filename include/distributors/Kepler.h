@@ -11,7 +11,7 @@ class Kepler : public Distributor {
 
 public:
 
-    Kepler(unsigned long seed = 0UL, int numParticles=100000);
+    Kepler(unsigned long seed, int numParticles);
 
     Particle next(int i=0) override;
 

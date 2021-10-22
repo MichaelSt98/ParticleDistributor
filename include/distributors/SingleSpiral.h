@@ -14,7 +14,7 @@ private:
 
 public:
 
-    SingleSpiral(unsigned long seed = 0UL, int numParticles=100000);
+    SingleSpiral(unsigned long seed, int numParticles);
 
     Particle next(int i=0) override;
 

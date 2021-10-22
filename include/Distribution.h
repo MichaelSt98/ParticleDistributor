@@ -6,6 +6,7 @@
 #include "distributors/Plummer.h"
 #include "distributors/SingleSpiral.h"
 #include "distributors/Kepler.h"
+#include "distributors/MultiplePlummer.h"
 
 #include <vector>
 #include <string>
@@ -13,7 +14,7 @@
 #include <iostream>
 
 enum class DistributionType {
-    plummer, singleSpiral, kepler
+    plummer, singleSpiral, kepler, multiplePlummer
 };
 
 class Distribution {
@@ -33,6 +34,9 @@ public:
     void generate();
     void write2file(const std::string& filename);
 
+    std::string getDistributionType() const {
+        return distributor->getName();
+    }
 };
 
 

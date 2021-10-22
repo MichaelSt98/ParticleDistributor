@@ -18,6 +18,9 @@ Distribution::Distribution(int numParticles, DistributionType distributionType, 
         case DistributionType::kepler: {
             distributor = new Kepler(seed, numParticles);
         } break;
+        case DistributionType::multiplePlummer: {
+            distributor = new MultiplePlummer(seed, numParticles);
+        } break;
         default:
             printf("not implemented!\n");
             exit(0);

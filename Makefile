@@ -42,6 +42,12 @@ sources: resources $(TARGET)
 #remake
 remake: cleaner all
 
+# build all with debug flags
+debug: CXXFLAGS += -g -Wall
+# show linker invocation when building debug target
+debug: LDFLAGS += -v
+debug: all
+
 #copy Resources from Resources Directory to Target Directory
 resources: directories
 	@cp -r $(RESDIR)/ $(TARGETDIR)/
@@ -66,7 +72,7 @@ cleaner: clean
 
 #link
 $(TARGET): $(OBJECTS)
-	$(CXX) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+	$(CXX) -o $(TARGETDIR)/$(TARGET) $^ $(LIB) $(LDFLAGS)
 
 #compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
@@ -108,4 +114,4 @@ doc: doxyfile.inc
 	cp -r "./doc/html/" "./docs/"
 
 #Non-File Targets
-.PHONY: all remake clean cleaner resources sources directories ideas tester doc
+.PHONY: all remake clean cleaner resources sources directories ideas tester doc debug
