@@ -5,12 +5,7 @@
 
 class Kepler : public Distributor {
 
-    std::uniform_real_distribution<double> distribution;
-    std::uniform_real_distribution<double> thetaDistribution;
-    int numParticles;
-
 public:
-
     Kepler(unsigned long seed, int numParticles);
 
     Particle next(int i=0) override;
@@ -25,6 +20,10 @@ private:
     double R; // outer disk radius
     double M; // mass of central star
     double m; // mass of orbiting stars
+
+    std::uniform_real_distribution<double> distribution;
+    std::uniform_real_distribution<double> thetaDistribution;
+
 };
 
 

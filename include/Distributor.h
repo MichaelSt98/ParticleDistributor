@@ -13,19 +13,13 @@
 
 class Distributor {
 
-private:
-
-    unsigned long seed;
-
 protected:
-
     std::mt19937 gen;
     //const double G = 6.67408e-11;
     const double G = 1.;
     ConfigParser confP;
 
 public:
-
     Distributor(unsigned long seed);
     virtual ~Distributor() {};
 

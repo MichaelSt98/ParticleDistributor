@@ -1,6 +1,6 @@
 #include "../../include/distributors/Kepler.h"
 
-Kepler::Kepler(unsigned long seed, int numParticles) : Distributor(seed), numParticles(numParticles) {
+Kepler::Kepler(unsigned long seed, int numParticles) : Distributor(seed){
 
     confP = ConfigParser("config/Kepler.info");
     std::string description = confP.getVal<std::string>("description");

@@ -23,6 +23,8 @@ protected:
     double M;
 
 private:
+    double R;
+    double R_max;
 
     std::uniform_real_distribution<double> rnd1;
     std::uniform_real_distribution<double> rnd2;
