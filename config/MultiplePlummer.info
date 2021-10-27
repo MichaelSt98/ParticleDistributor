@@ -1,9 +1,15 @@
 ;description of MultiplePlummer distributor
 description "Randomly arranged plummer spheres"
 
+;single plummer spheres configuration values passed to base class
 ;total mass for one plummer sphere
 M 1.
+;scale radius
+R 1.
+;cut-off radius
+R_max 25.
 
+;additional options
 ;number of distributed plummer spheres
 numPlummerSpheres 5
 

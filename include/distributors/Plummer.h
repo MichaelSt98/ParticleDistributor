@@ -21,11 +21,10 @@ protected:
 
     // values read from config file
     double M;
-
-private:
     double R;
     double R_max;
 
+private:
     std::uniform_real_distribution<double> rnd1;
     std::uniform_real_distribution<double> rnd2;
     std::uniform_real_distribution<double> rnd3;

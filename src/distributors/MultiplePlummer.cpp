@@ -12,6 +12,10 @@ MultiplePlummer::MultiplePlummer(unsigned long seed, int numParticles) : Plummer
     std::cout << "Description: " << description << std::endl;
 
     numPlummerSpheres = confP.getVal<int>("numPlummerSpheres");
+    // overwrite base class members
+    M = confP.getVal<double>("M");
+    R = confP.getVal<double>("R");
+    R_max = confP.getVal<double>("R_max");
 
     if (numParticles % numPlummerSpheres != 0){
         std::cout << "WARNING: numPlummerSpheres =" << numPlummerSpheres
@@ -20,11 +24,11 @@ MultiplePlummer::MultiplePlummer(unsigned long seed, int numParticles) : Plummer
     }
 
     const double boxLength { confP.getVal<double>("boxLength") };
-    rndX =std::uniform_real_distribution<double>(-.5*boxLength,
+    rndX = std::uniform_real_distribution<double>(-.5*boxLength,
                                                  std::nextafter(.5*boxLength, std::numeric_limits<double>::max()));
-    rndY =std::uniform_real_distribution<double>(-.5*boxLength,
+    rndY = std::uniform_real_distribution<double>(-.5*boxLength,
                                                  std::nextafter(.5*boxLength, std::numeric_limits<double>::max()));
-    rndZ =std::uniform_real_distribution<double>(-.5*boxLength,
+    rndZ = std::uniform_real_distribution<double>(-.5*boxLength,
                                                  std::nextafter(.5*boxLength, std::numeric_limits<double>::max()));
 
     particleCounter = 0;
@@ -39,7 +43,7 @@ Particle MultiplePlummer::next(int i){
     }
     Particle p_ = Plummer::next(i);
     p_.pos += plummerCenterVec;
-    p_.mass = p_.mass * numPlummerSpheres;
+    p_.mass = p_.mass * numPlummerSpheres; // m=M/numParticles in base class
     ++particleCounter;
     return p_;
 }
