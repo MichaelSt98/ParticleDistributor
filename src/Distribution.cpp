@@ -1,11 +1,12 @@
 #include "../include/Distribution.h"
 
-Distribution::Distribution(int numParticles, DistributionType distributionType, unsigned long seed) :
-                numParticles(numParticles), seed(seed) {
+Distribution::Distribution(int numParticles, DistributionType distributionType, unsigned long _seed) :
+                numParticles(numParticles), seed(_seed) {
 
-    if (this->seed == 0UL) {
+    if (seed == 0UL) {
         std::random_device rd; // obtain a random number from hardware
-        this->seed = rd();
+        seed = rd();
+        std::cout << "Obtained random seed from hardware: " << seed << std::endl;
     }
 
     switch (distributionType) {

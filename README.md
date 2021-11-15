@@ -9,6 +9,7 @@ Create **Particle Distribution(s)** for N-Body (and prospectively SPH) simulatio
 * [Plummer](src/distributors/Plummer.cpp)
 * [SingleSpiral](src/distributors/SingleSpiral.cpp)
 * [Kepler](src/distributors/Kepler.cpp)
+* [MultiplePlummer](src/MultiplePlummer.cpp)
 
 ### Plummer
 
@@ -21,3 +22,8 @@ Create **Particle Distribution(s)** for N-Body (and prospectively SPH) simulatio
 ### Kepler
 
 **Central star with small bodies orbiting with kepler velocity**
+
+
+### MultiplePlummer
+
+**Multiple Plummer spheres with their centers randomly distributed in a box** 

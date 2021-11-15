@@ -28,7 +28,7 @@ private:
 
 public:
 
-    Distribution(int numParticles, DistributionType distributionType, unsigned long seed=0UL);
+    Distribution(int numParticles, DistributionType distributionType, unsigned long _seed=0UL);
     ~Distribution();
 
     void generate();

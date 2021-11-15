@@ -39,7 +39,7 @@ Particle MultiplePlummer::next(int i){
 
     if (particleCounter % (numParticles/numPlummerSpheres) == 0){
         plummerCenterVec = vec3(rndX(gen), rndY(gen), rndZ(gen));
-
+        std::cout << "Creating Plummer sphere @" << plummerCenterVec << std::endl;
     }
     Particle p_ = Plummer::next(i);
     p_.pos += plummerCenterVec;
