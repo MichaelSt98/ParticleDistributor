@@ -12,6 +12,7 @@ class MultiplePlummer : public Plummer {
 public:
 
     MultiplePlummer(unsigned long seed, int numParticles);
+    ~MultiplePlummer();
 
     Particle next(int i=0) override;
 
@@ -27,7 +28,8 @@ private:
     std::uniform_real_distribution<double> rndY;
     std::uniform_real_distribution<double> rndZ;
 
-    vec3 plummerCenterVec;
+    vec3 *plummerCenterVec;
+    vec3 *currentPlummerCenter;
 
     // values read from config file
     int numPlummerSpheres;

@@ -31,18 +31,31 @@ MultiplePlummer::MultiplePlummer(unsigned long seed, int numParticles) : Plummer
     rndZ = std::uniform_real_distribution<double>(-.5*boxLength,
                                                  std::nextafter(.5*boxLength, std::numeric_limits<double>::max()));
 
-    particleCounter = 0;
+    plummerCenterVec = new vec3[numPlummerSpheres];
+    for (int n=0; n<numPlummerSpheres; ++n){
+        // Plummer spheres centers shall have the same locations for the same random seed
+        // and therefore centers have to be created on initialization to ensure this
+        // behaviour for different numbers of particles as gen is used for all random distributions
+        plummerCenterVec[n] = vec3(rndX(gen), rndY(gen), rndZ(gen));
+    }
 
+    currentPlummerCenter = plummerCenterVec;
+    std::cout << "Creating Plummer sphere @" << *currentPlummerCenter << std::endl;
+    particleCounter = 0;
+}
+
+MultiplePlummer::~MultiplePlummer(){
+    delete[] plummerCenterVec;
 }
 
 Particle MultiplePlummer::next(int i){
 
-    if (particleCounter % (numParticles/numPlummerSpheres) == 0){
-        plummerCenterVec = vec3(rndX(gen), rndY(gen), rndZ(gen));
-        std::cout << "Creating Plummer sphere @" << plummerCenterVec << std::endl;
+    if (particleCounter > 0 && particleCounter % (numParticles/numPlummerSpheres) == 0){
+        ++currentPlummerCenter;
+        std::cout << "Creating Plummer sphere @" << *currentPlummerCenter << std::endl;
     }
     Particle p_ = Plummer::next(i);
-    p_.pos += plummerCenterVec;
+    p_.pos += *currentPlummerCenter;
     p_.mass = p_.mass * numPlummerSpheres; // m=M/numParticles in base class
     ++particleCounter;
     return p_;
