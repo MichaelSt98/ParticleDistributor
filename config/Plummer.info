@@ -3,9 +3,7 @@ description "Particles with same mass distributed according to the plummer model
 
 ;total mass
 M 1.
-
 ;scale radius
 R .2
-
 ; cut-off radius
 R_max 1.

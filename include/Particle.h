@@ -15,8 +15,6 @@ public:
     vec3 vel;
     double mass;
 
-
-
 };
 
 

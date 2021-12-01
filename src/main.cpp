@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
                              "Generating HDF5 file with initial particle distribution for N-Body and SPH simulation.");
 
     std::vector<std::string> availableDistributionTypes = { Plummer::name, SingleSpiral::name, Kepler::name,
-                                                            MultiplePlummer::name };
+                                                            MultiplePlummer::name, KeplerTorus::name };
     std::stringstream availableDistributionTypesHelp;
 
     availableDistributionTypesHelp << "(";

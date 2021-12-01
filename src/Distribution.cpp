@@ -22,13 +22,15 @@ Distribution::Distribution(int numParticles, DistributionType distributionType, 
         case DistributionType::multiplePlummer: {
             distributor = new MultiplePlummer(seed, numParticles);
         } break;
+        case DistributionType::keplerTorus: {
+            distributor = new KeplerTorus(seed, numParticles);
+        } break;
         default:
             printf("not implemented!\n");
             exit(0);
     }
 
     std::cout << "Selected distribution type: " << distributor->getName() << std::endl;
-
 }
 
 Distribution::~Distribution() {
@@ -62,7 +64,6 @@ void Distribution::write2file(const std::string& filename) {
     HighFive::DataSet mass = file.createDataSet<double>("/m", HighFive::DataSpace::From(_mass));
     HighFive::DataSet pos = file.createDataSet<double>("/x",  HighFive::DataSpace::From(_pos));
     HighFive::DataSet vel = file.createDataSet<double>("/v",  HighFive::DataSpace::From(_vel));
-
 
     // write data
     mass.write(_mass);

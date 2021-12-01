@@ -5,8 +5,11 @@ description "Central star, small bodies orbiting with kepler velocity."
 R 1.
 ;149597870700.
 
+;Torus radius
+r 0.3
+
 ;width of disk, disk from (R-width):R
-diskWidth 0.2
+;diskWidth 0.2
 ;diskWidth 29919574140.0
 
 ;mass of central star
@@ -18,9 +21,3 @@ M 10.
 m 1.e-7
 ;m 2.e24
 ;m 2.5e-8
-
-
-; perturbations y/n
-perturbations true
-; dimension of perturbations
-perturbationDim 0.2

@@ -7,6 +7,7 @@
 #include "distributors/SingleSpiral.h"
 #include "distributors/Kepler.h"
 #include "distributors/MultiplePlummer.h"
+#include "distributors/KeplerTorus.h"
 
 #include <vector>
 #include <string>
@@ -14,7 +15,7 @@
 #include <iostream>
 
 enum class DistributionType {
-    plummer, singleSpiral, kepler, multiplePlummer
+    plummer, singleSpiral, kepler, multiplePlummer, keplerTorus
 };
 
 class Distribution {

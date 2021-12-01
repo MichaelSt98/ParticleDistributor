@@ -3,6 +3,9 @@
 
 #include "../Distributor.h"
 
+using u32    = uint_least32_t;
+using engine = std::mt19937;
+
 class Kepler : public Distributor {
 
 public:
@@ -20,7 +23,10 @@ private:
     double R; // outer disk radius
     double M; // mass of central star
     double m; // mass of orbiting stars
+    bool applyPerturbations;
+    double perturbationDim;
 
+    std::uniform_int_distribution<unsigned long> perturbations;
     std::uniform_real_distribution<double> distribution;
     std::uniform_real_distribution<double> thetaDistribution;
 
