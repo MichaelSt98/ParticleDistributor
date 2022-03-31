@@ -8,6 +8,7 @@
 #include "distributors/Kepler.h"
 #include "distributors/MultiplePlummer.h"
 #include "distributors/KeplerTorus.h"
+#include "distributors/CompoundGalaxy.h"
 
 #include <vector>
 #include <string>
@@ -15,7 +16,7 @@
 #include <iostream>
 
 enum class DistributionType {
-    plummer, singleSpiral, kepler, multiplePlummer, keplerTorus
+    plummer, singleSpiral, kepler, multiplePlummer, keplerTorus, compoundGalaxy
 };
 
 class Distribution {
@@ -26,6 +27,7 @@ private:
     std::vector<Particle> particles;
     Distributor *distributor;
     unsigned long seed;
+    DistributionType distributionType;
 
 public:
 

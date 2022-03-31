@@ -1,0 +1,29 @@
+;Compound galaxy described in https://articles.adsabs.harvard.edu/pdf/1993ApJS...86..389H
+
+;description of CompoundGalaxy distributor
+description "Galaxy built from bulge, disk and DM halo"
+
+;; DISK ;;
+;disk mass
+M_d 1.
+;radial scale length
+h 1.
+;vertical scale thickness
+z_0 .2
+
+;; BULGE ;;
+;bulge mass
+M_b .33333
+;semi-major axis
+a .2
+;semi-minor axis
+c .1
+
+;; HALO ;;
+;halo mass
+M_h 5.8
+;cutoff radius
+r_c 10.
+;core radius
+gamma 1.
+

@@ -214,6 +214,7 @@ public:
         return dx*dx + dy*dy + dz*dz;
     }
 
+    // TODO: this seems fishy
     T getDistance(const Vector3& u) const {
         T getDistanceSquared(u);
         return 0;

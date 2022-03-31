@@ -1,7 +1,7 @@
 #include "../include/Distribution.h"
 
 Distribution::Distribution(int numParticles, DistributionType distributionType, unsigned long _seed) :
-                numParticles(numParticles), seed(_seed) {
+                numParticles(numParticles), distributionType(distributionType), seed(_seed) {
 
     if (seed == 0UL) {
         std::random_device rd; // obtain a random number from hardware
@@ -25,8 +25,11 @@ Distribution::Distribution(int numParticles, DistributionType distributionType, 
         case DistributionType::keplerTorus: {
             distributor = new KeplerTorus(seed, numParticles);
         } break;
+        case DistributionType::compoundGalaxy: {
+            distributor = new CompoundGalaxy(seed, numParticles);
+        } break;
         default:
-            printf("not implemented!\n");
+            std::cerr << "Not implemented. - Aborting." << std::endl;
             exit(0);
     }
 
@@ -50,20 +53,30 @@ void Distribution::write2file(const std::string& filename) {
     HighFive::File file("output/" + filename + "N" + std::to_string(numParticles) + "seed" + std::to_string(seed) + ".h5",
               HighFive::File::ReadWrite | HighFive::File::Create | HighFive::File::Truncate);
 
-    std::vector<double> _mass;
-    std::vector<std::vector<double>> _pos;
-    std::vector<std::vector<double>> _vel;
+    std::vector<double> _mass(numParticles);
+    std::vector<std::vector<double>> _pos(numParticles);
+    std::vector<std::vector<double>> _vel(numParticles);
 
     for (int i=0; i<numParticles; i++) {
-        _mass.push_back(particles[i].mass);
-        _pos.push_back({ particles[i].pos.x, particles[i].pos.y, particles[i].pos.z });
-        _vel.push_back({ particles[i].vel.x, particles[i].vel.y, particles[i].vel.z });
+        _mass[i] = particles[i].mass;
+        _pos[i] = { particles[i].pos.x, particles[i].pos.y, particles[i].pos.z };
+        _vel[i] = { particles[i].vel.x, particles[i].vel.y, particles[i].vel.z };
     }
 
     // create data sets
     HighFive::DataSet mass = file.createDataSet<double>("/m", HighFive::DataSpace::From(_mass));
     HighFive::DataSet pos = file.createDataSet<double>("/x",  HighFive::DataSpace::From(_pos));
     HighFive::DataSet vel = file.createDataSet<double>("/v",  HighFive::DataSpace::From(_vel));
+
+    // adding material type if distribution is a compound galaxy
+    if (distributionType == DistributionType::compoundGalaxy){
+        std::vector<int> _matId(numParticles);
+        for (int i=0; i<numParticles; i++) {
+            _matId[i] = particles[i].matId;
+        }
+        HighFive::DataSet matId = file.createDataSet<int>("/materialId", HighFive::DataSpace::From(_matId));
+        matId.write(_matId);
+    }
 
     // write data
     mass.write(_mass);

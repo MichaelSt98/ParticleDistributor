@@ -14,6 +14,7 @@ public:
     vec3 pos;
     vec3 vel;
     double mass;
+    int matId;
 
 };
 
