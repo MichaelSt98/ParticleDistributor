@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <boost/math/quadrature/trapezoidal.hpp>
+#include <boost/math/tools/roots.hpp>
 
 #include "../Distributor.h"
 
