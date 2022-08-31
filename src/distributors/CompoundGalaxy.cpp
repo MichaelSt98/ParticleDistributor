@@ -75,6 +75,7 @@ CompoundGalaxy::CompoundGalaxy(unsigned long seed, int numParticles) : Distribut
 
 Particle CompoundGalaxy::next(int i) {
     Particle particle;
+    std::cout << "Sampling velocity of particle " << i << std::endl;
     switch (component) {
         case disk: {
             particle = diskParticles[i];
@@ -86,7 +87,6 @@ Particle CompoundGalaxy::next(int i) {
         } break;
         case halo: {
             particle = haloParticles[i-2*numParticles/3];
-            std::cout << "Sampling velocity of particle " << i << std::endl;
             velHalo(particle);
         } break;
         default:
@@ -170,7 +170,85 @@ void CompoundGalaxy::velDisk(Particle &p){
 }
 
 void CompoundGalaxy::velBulge(Particle &p){
-    //TODO: Implement
+    // calculate Gravitational potential @ cylindrical radius R
+
+    double R = sqrt(p.pos[0]*p.pos[0] + p.pos[1]*p.pos[1]);
+    double z = p.pos[2];
+
+    double Psi = psiBulge(R, z);
+
+    std::cout << "Bulge: Psi = " << Psi << ", R = " << R << ", z = " << z << std::endl;
+
+    auto f2iv2R = [&](double _psi){
+        auto f4root = [&](double _z){
+            double Psi_z = psiBulge(R, _z);
+            double dPsidz = dPsidzBulge(R, _z);
+
+            //std::cout << "  Psi_z = " << Psi_z << ", dPsi = " << dPsidz << " _psi = " << _psi << std::endl;
+
+            return std::pair<double, double>(Psi_z - _psi, dPsidz);
+        };
+        double z_ = boost::math::tools::newton_raphson_iterate(f4root, z/2., -1e7*c, 1e7*c, 10);
+        //std::cout << "  f2iv2R: z_ = " << z_ << std::endl;
+        return rhoBulge(R, z_);
+    };
+
+    auto t1 = std::chrono::high_resolution_clock::now();
+    //double v2R = 1./rhoBulge(R, z) * boost::math::quadrature::trapezoidal(f2iv2R, 0., Psi);
+    double v2R = 1./rhoBulge(R, z) * boost::math::quadrature::gauss<double, 30>::integrate(f2iv2R, 0., Psi);
+    auto t2 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    std::cout << "       v2R = " << v2R << " took " << dt.count() << "ms" << std::endl;
+
+    auto f2iv2Phi = [&](double _psi){
+        auto f4root = [&](double _z){
+            double Psi_z = psiBulge(R, _z);
+            double dPsidz = dPsidzBulge(R, _z);
+
+            //std::cout << "  Psi_z = " << Psi_z << ", dPsi = " << dPsidz << " _psi = " << _psi << std::endl;
+
+            return std::pair<double, double>(Psi_z - _psi, dPsidz);
+        };
+        double z_ = boost::math::tools::newton_raphson_iterate(f4root, z/2., -1e7*c, 1e7*c, 10);
+        //std::cout << "  f2iv2R: z_ = " << z_ << std::endl;
+
+        double m = sqrt(R*R/(a*a) + (z_*z_)/(c*c));
+        double dRhodR = - M_b*R * (c*c*c*(a*a*m+4.*R*R)+4.*a*a*c*z_*z_)/(2.*M_PI*pow(a*a*a*z_*z_+a*c*c*R*R, 2.)*pow(m+1.,4.));
+        double dRhodz = -M_b * z_ * (4.*m+1.)/(2.*M_PI*c*(a*a*z_*z_+c*c*R*R)*m*pow(m+1., 4.));
+        double dzdR = - dPsidRBulge(R, z_)/dPsidzBulge(R, z_);
+
+        return R * (dRhodR+dRhodz*dzdR);
+    };
+
+    t1 = std::chrono::high_resolution_clock::now();
+    //double v2R = 1./rhoBulge(R, z) * boost::math::quadrature::trapezoidal(f2iv2R, 0., Psi);
+    double sigma2Phi = v2R + 1./rhoBulge(R, z) * boost::math::quadrature::gauss<double, 30>::integrate(f2iv2Phi, 0., Psi);
+    t2 = std::chrono::high_resolution_clock::now();
+    dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    std::cout << "       sigma2Phi = " << sigma2Phi << " took " << dt.count() << "ms" << std::endl;
+
+    auto f2iBulge = [&](double _r){
+        // TODO: find correct way to estimate rho_b(r)
+        return rhoBulge(c/a*_r, sqrt((1.-c*c/a*a)*_r*_r))*G*massInSphere(_r, bulge)/(_r*_r);
+    };
+
+    // mean velocity @r induced by disk and halo
+    double v2_r = 1./rhoBulge(R, z) * boost::math::quadrature::trapezoidal(f2iBulge, sqrt(R*R+z*z), 10.*r_c);
+    std::cout << "       v2_r = " << v2_r << std::endl;
+
+    // Sampling cartesian velocities from gaussian with given dispersions
+    std::normal_distribution<double> rnd_v {0., sqrt(v2R+v2_r)};
+    std::normal_distribution<double> rnd_sigma {0., sqrt(sigma2Phi+v2_r)};
+
+    double vR = rnd_v(gen);
+    double v_z = rnd_v(gen);
+    double vPhi = rnd_sigma(gen);
+
+    double v_x = (vR*p.pos[0] - vPhi*p.pos[1])/R;
+    double v_y = (vR*p.pos[1] + vPhi*p.pos[0])/R;
+
+    p.vel = vec3(v_x, v_y, v_z);
+
 }
 
 void CompoundGalaxy::velHalo(Particle &p){
@@ -184,26 +262,13 @@ void CompoundGalaxy::velHalo(Particle &p){
                     * boost::math::quadrature::trapezoidal(f2iHalo, r, 10.*r_c);
 
     //double sigma2 = pow(v2_r, 9./4.)/(8.*pow(2., 1./4.)*pow(M_PI, 13./4.)); // normalization factor squared
-    double sigma2 = v2_r;
+    //double sigma2 = v2_r;
 
-    // choose F between 0 and 1
-    double F = rnd12(gen);// * 4.*M_PI*pow(2.*M_PI*sigma2, -3./2.)*2.*v2_r/M_E;
+    //std::cout << "  factor=" << 4.*M_PI*pow(2.*M_PI*v2_r, -3./2.) << std::endl;
+    std::cout << "  r=" << r << ", M(r)=" << massInSphere(r) << ", v2_r=" << v2_r << std::endl;
 
-    std::cout << "  factor=" << 4.*M_PI*pow(2.*M_PI*sigma2, -3./2.) << std::endl;
-    std::cout << "  r=" << r << ", M(r)=" << massInSphere(r) << ", F=" << F << ", sigma2=" << sigma2 << ", v2_r=" << v2_r << std::endl;
-
-    auto f4root = [&](double _v){
-
-        auto f2iF = [&](double x){ return x*x*exp(-x*x/(2.*v2_r)); };
-
-        double F_ = 4.*M_PI*pow(2.*M_PI*sigma2, -3./2.)*boost::math::quadrature::trapezoidal(f2iF, 0., _v);
-        double dFdv = 4.*M_PI*pow(2.*M_PI*sigma2, -3./2.)*_v*_v*exp(-_v*_v/(2.*v2_r));
-
-        return std::pair<double, double>(F_ - F, dFdv);
-    };
-
-    // arbitrarily limit speed to 15*v_esc
-    double v = boost::math::tools::newton_raphson_iterate(f4root, sqrt(v2_r), 0., 5.*sqrt(2.*G*massInSphere(r)/r), 15);
+    // arbitrarily limit speed to 5*v_esc
+    double v = speedFromMaxwell(v2_r, 5.*sqrt(2.*G*massInSphere(r)/r));
 
     std::cout << "Chosen v = " << v << std::endl;
     //v = 1./(4.*M_PI)*pow(2.*M_PI*sigma2, 3./2.)*v; // scale v
@@ -215,21 +280,111 @@ void CompoundGalaxy::velHalo(Particle &p){
     double v_y = sqrt(v*v - v_z*v_z) * sin(phi);
 
     p.vel = vec3(v_x, v_y, v_z);
+
 }
 
-double CompoundGalaxy::massInSphere(double r){
+double CompoundGalaxy::speedFromMaxwell(const double v2, const double vMax){
+
+    // choose F between 0 and 1
+    double F = rnd12(gen);// * 4.*M_PI*pow(2.*M_PI*sigma2, -3./2.)*2.*v2_r/M_E;
+
+    auto f4root = [&](double _v){
+
+        auto f2iF = [&](double x){ return x*x*exp(-x*x/(2.*v2)); };
+
+        // TODO: use analytical form of the integral
+        double F_ = 4.*M_PI*pow(2.*M_PI*v2, -3./2.)*boost::math::quadrature::trapezoidal(f2iF, 0., _v);
+        double dFdv = 4.*M_PI*pow(2.*M_PI*v2, -3./2.)*_v*_v*exp(-_v*_v/(2.*v2));
+
+        return std::pair<double, double>(F_ - F, dFdv);
+    };
+
+    double v_ = boost::math::tools::newton_raphson_iterate(f4root, sqrt(v2), 0., vMax, 15);
+    return v_;
+}
+
+double CompoundGalaxy::massInSphere(const double r, Component exclude){
     // greater than r predicate
     auto gtr = [&r](double val){ return val > r; };
 
+    double M_ = 0.;
+
     // approximating mass contained by finding index of r in sorted radii vectors
     // disk mass
-    auto ir_d = std::find_if(begin(diskRadii), end(diskRadii), gtr);
-    // bulge mass
-    auto ir_b = std::find_if(begin(bulgeRadii), end(bulgeRadii), gtr);
-    // halo mass
-    auto ir_h = std::find_if(begin(haloRadii), end(haloRadii), gtr);
+    if (exclude != disk){
+        auto ir_d = std::find_if(begin(diskRadii), end(diskRadii), gtr);
+        M_ += (double)(ir_d - diskRadii.begin())/(double)(numParticles/3)*M_d;
+    }
+    if (exclude != bulge) {
+        // bulge mass
+        auto ir_b = std::find_if(begin(bulgeRadii), end(bulgeRadii), gtr);
+        M_ += (double)(ir_b - bulgeRadii.begin())/(double)(numParticles/3)*M_b;
+    }
+    if (exclude != halo){
+        // halo mass
+        auto ir_h = std::find_if(begin(haloRadii), end(haloRadii), gtr);
+        M_ += (double)(ir_h - haloRadii.begin())/(double)(numParticles/3)*M_h;
+    }
+    return M_;
+}
 
-    return (double)(ir_d - diskRadii.begin())/(double)(numParticles/3)*M_d
-            + (double)(ir_b - bulgeRadii.begin())/(double)(numParticles/3)*M_b
-            + (double)(ir_h - haloRadii.begin())/(double)(numParticles/3)*M_h;
+double CompoundGalaxy::psiBulge(double R, double z){
+    auto f2iPhi_b0 = [&](double _u)
+    { return 1./((a*a+_u)*sqrt(c*c+_u)*pow(1.+sqrt(R*R/(a*a+_u) + z*z/(c*c+_u)), 2.)); };
+
+    double Phi_b0 = boost::math::quadrature::trapezoidal(f2iPhi_b0, 0., 1.);
+
+    auto f2iPhi_b1 = [&](double _w)
+    { return 6.*_w*_w/((pow(_w, 6.)*a*a+1.)*sqrt(pow(_w, 6.)*c*c+1.)*pow(1.+sqrt(R*R*pow(_w, 6.)/(pow(_w, 6.)*a*a+1.)+z*z*pow(_w, 6.)/(pow(_w, 6.)*c*c+1.)), 2.)); };
+
+    double Phi_b1 = boost::math::quadrature::trapezoidal(f2iPhi_b1, 0., 1.);
+
+    //std::cout << "       Phi_b0 = " << Phi_b0 << ", Phi_b1 = " << Phi_b1 << std::endl;
+
+    return G*M_b/2.*(Phi_b0 + Phi_b1);
+}
+
+double CompoundGalaxy::dPsidzBulge(double R, double z){
+    auto f2iPhi_b0 = [&](double _u)
+    { return -z/((a*a+_u)*pow(c*c+_u, 3./2.)*sqrt(R*R/(a*a+_u)+z*z/(c*c+_u))*pow(1.+sqrt(R*R/(a*a+_u) + z*z/(c*c+_u)), 2.)); };
+
+    double Phi_b0 = boost::math::quadrature::trapezoidal(f2iPhi_b0, 0., 1.);
+
+    auto f2iPhi_b1 = [&](double _w){
+        //TODO: find a better way to handle 0 values of _w
+        if (_w == 0.){
+            return 0.;
+        } else {
+            return -6.*z*pow(_w, 8.)/((pow(_w, 6.)*a*a+1.)*pow(pow(_w, 6.)*c*c+1., 3./2.)*sqrt(R*R*pow(_w, 6.)/(pow(_w, 6.)*a*a+1.)+z*z*pow(_w, 6.)/(pow(_w, 6.)*c*c+1.))*pow(1.+sqrt(R*R*pow(_w, 6.)/(pow(_w, 6.)*a*a+1.)+z*z*pow(_w, 6.)/(pow(_w, 6.)*c*c+1.)), 2.));
+        }
+    };
+
+    double Phi_b1 = boost::math::quadrature::trapezoidal(f2iPhi_b1, 0., 1.);
+
+    return G*M_b/2.*(Phi_b0 + Phi_b1);
+}
+
+double CompoundGalaxy::dPsidRBulge(double R, double z){
+    auto f2iPhi_b0 = [&](double _u)
+    { return -R/(pow(a*a+_u, 2.)*sqrt(c*c+_u)*sqrt(R*R/(a*a+_u)+z*z/(c*c+_u))*pow(1.+sqrt(R*R/(a*a+_u) + z*z/(c*c+_u)), 2.)); };
+
+    double Phi_b0 = boost::math::quadrature::trapezoidal(f2iPhi_b0, 0., 1.);
+
+    auto f2iPhi_b1 = [&](double _w){
+        //TODO: find a better way to handle 0 values of _w
+        if (_w == 0.){
+            return 0.;
+        } else {
+            return -6.*z*pow(_w, 8.)/(pow(pow(_w, 6.)*a*a+1., 2.)*sqrt(pow(_w, 6.)*c*c+1.)*sqrt(R*R*pow(_w, 6.)/(pow(_w, 6.)*a*a+1.)+z*z*pow(_w, 6.)/(pow(_w, 6.)*c*c+1.))*pow(1.+sqrt(R*R*pow(_w, 6.)/(pow(_w, 6.)*a*a+1.)+z*z*pow(_w, 6.)/(pow(_w, 6.)*c*c+1.)), 2.));
+        }
+    };
+
+    double Phi_b1 = boost::math::quadrature::trapezoidal(f2iPhi_b1, 0., 1.);
+
+    return G*M_b/2.*(Phi_b0 + Phi_b1);
+}
+
+double CompoundGalaxy::rhoBulge(double R, double z){
+    double m = sqrt(R*R/(a*a)+z*z/(c*c));
+    return M_b/(2.*M_PI*a*a*c*m*pow(1.+m, 3.));
 }

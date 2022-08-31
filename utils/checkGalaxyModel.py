@@ -31,6 +31,11 @@ alpha = 1./(1.-np.sqrt(np.pi)*q*np.exp(q*q)*(1.-erf(q)))
 MAT_COLORS = ["#00ff00", "#0000ff", "#ff007f"]
 
 # analytical functions
+
+#cylindrical radius
+def cylR(x):
+    return np.sqrt(x[0]**2.+x[1]**2.)
+
 #bulge
 def m(x):
     return np.sqrt((x[0]**2.+x[1]**2.)/a**2. + x[2]**2./c**2.)
@@ -76,6 +81,40 @@ def binBy(radii, matIds, matId2bin, ppBin):
     binsizes = np.array(binsizes)
     rBins = np.array(rBins)
     return rBins, binsizes
+
+# calculate mean velocity in bins
+def binVelBy(radii, vels, matIds, matId2bin, ppBin):
+    rMin = 0.
+    pCounter = 0
+    rBins = []
+    vBins = []
+    binRadii = []
+    binVels = []
+    rMin = 0.
+
+    print("Binning material and calculating mean velocities ", matId2bin, " ...")
+    
+    for i, r in enumerate(radii):
+        #print("Radius2bin ", r, ", index ", i, ", material ", matIds[i])
+        #if pCounter == 0:
+        #    rMin = r
+        if matIds[i] == matId2bin:
+            pCounter = pCounter+1
+            binRadii.append(r)
+            binVels.append(vels[i])
+            if pCounter == ppBin:
+                rBins.append(np.mean(binRadii))
+                vBins.append(np.mean(binVels))
+                print("    ... bin ", rMin, " -- ", r, " full with veocity ", vBins[-1], " ...")
+                pCounter = 0
+                binRadii = []
+                rMin = r
+
+    print("... done.")
+
+    rBins = np.array(rBins)        
+    vBins = np.array(vBins)
+    return rBins, vBins
 
 
 if __name__=="__main__":
@@ -134,6 +173,27 @@ if __name__=="__main__":
     matIds_h = matIds[rPerm]
     
     rBins_h, binsizes_h = binBy(radii, matIds_h, 2, ppBin_h)
+
+    # Velocity profiles in cylindrical radius
+    cylRadii = np.apply_along_axis(cylR, 1, pos)
+
+    cylRPerm = cylRadii.argsort()
+    cylRadii = cylRadii[cylRPerm]
+    matIdsVel = matIds[cylRPerm]
+    vels = speeds[cylRPerm]
+
+    matLabels = ["Disk", "Bulge", "Halo"]
+    ppBins = [ppBin_d, ppBin_b, ppBin_h]
+    
+    plt.figure(0, figsize=(8, 6), dpi=200)
+    for matId in [0, 1, 2]:
+        cylR, cylSpeed = binVelBy(cylRadii, vels, matIdsVel, matId, ppBins[matId])
+        plt.plot(cylR, cylSpeed, 'x', color=MAT_COLORS[matId], label=matLabels[matId])
+
+    plt.legend()
+    plt.grid()
+    plt.show()
+    exit(0)
 
     plt.rc('text', usetex=True)
     plt.rc('text.latex', preamble=r'\usepackage{siunitx}')

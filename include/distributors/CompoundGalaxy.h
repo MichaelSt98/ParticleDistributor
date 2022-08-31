@@ -3,7 +3,9 @@
 
 #include <algorithm>
 #include <boost/math/quadrature/trapezoidal.hpp>
+#include <boost/math/quadrature/gauss.hpp>
 #include <boost/math/tools/roots.hpp>
+#include <chrono>
 
 #include "../Distributor.h"
 
@@ -46,7 +48,7 @@ protected:
 
 private:
 
-    enum Component { disk, bulge, halo };
+    enum Component { disk, bulge, halo, none };
     int component { disk };
 
     std::vector<Particle> diskParticles, bulgeParticles, haloParticles;
@@ -65,8 +67,14 @@ private:
     void velBulge(Particle &p);
     void velHalo(Particle &p);
 
-    // functions to integrate numerically for velocity computation
-    double massInSphere(double r);
+    double speedFromMaxwell(const double v2, const double vMax);
+
+    // functions for velocity computation
+    double massInSphere(const double r, Component exclude=none);
+    double psiBulge(double R, double z);
+    double dPsidzBulge(double R, double z);
+    double dPsidRBulge(double R, double z);
+    double rhoBulge(double R, double z);
 };
 
 
