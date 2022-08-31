@@ -29,7 +29,6 @@ $ cd hdf5-<hdf5 version>
 $ ./configure --prefix=<install-directory>
 $ make			# build the library
 $ make check	# verify the correctness
-				# Read the Details section about parallel tests.
 $ make install
 ```
 * taken from [realease_docs](https://github.com/HDFGroup/hdf5/tree/develop/release_docs)
@@ -91,6 +90,13 @@ Update the following variables in the Makefile as described in the dependencies 
 Then you can build the program with `make`.
 
 ## Getting started
+
+**Note:** If you installed HDF5 locally you may need to update the environment variable `LD_LIBRARY_PATH` to include your HDF5 installation. This can be done in a bash shell with:
+
+```
+export LD_LIBRARY_PATH=$(HDF5DIR)/lib:$(LD_LIBRARY_PATH)
+```
+The program's help can then be showed via `bin/runner -h` which gives:
 
 ```
 Generating HDF5 file with initial particle distribution for N-Body and SPH simulation.
