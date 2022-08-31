@@ -4,7 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
-#include <boost/mpi.hpp>
+#include <boost/serialization/base_object.hpp>
 
 template <class T>
 class Vector3 {

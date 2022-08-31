@@ -5,8 +5,8 @@ CXX           := g++
 TARGET        := runner
 
 # Update this
-HEADERONLYDIR := /usr/local/Headeronly
-HDF5DIR       := /usr/local/hdf5
+HEADERONLYDIR := /usr/local/headeronly
+HDF5DIR       := /usr/local/hdf5/serial
 
 #Directories
 SRCDIR        := ./src
@@ -28,7 +28,7 @@ OBJEXT      := o
 #Flags, Libraries and Includes
 CXXFLAGS    := -std=c++11 -O3 #-Xpreprocessor -fopenmp #-lomp -Wall #-fopenmp -Wall -O3 -g
 LIB         := -L$(HDF5DIR)/lib -lhdf5 -lboost_serialization -lboost_filesystem -lboost_system#-fopenmp -lm -larmadillo
-INC         := -I$(INCDIR) -I$(HEADERONLYDIR)/HighFive/include -I$(HEADERONLYDIR)/cxxopts  -I/usr/local/include
+INC         := -I$(INCDIR) -I$(HEADERONLYDIR) -I$(HDF5DIR)/include -I/usr/local/include
 INCDEP      := -I$(INC)
 
 #Source and Object files
