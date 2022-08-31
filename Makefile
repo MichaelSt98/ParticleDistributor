@@ -1,28 +1,34 @@
 #Compiler/Linker
-CXX         := g++
+CXX           := g++
 
 #Target binary
-TARGET      := runner
+TARGET        := runner
+
+# Update this
+HEADERONLYDIR := /usr/local/Headeronly
+HDF5DIR       := /usr/local/hdf5
 
 #Directories
-SRCDIR      := ./src
-INCDIR      := ./include
-BUILDDIR    := ./build
-TARGETDIR   := ./bin
-RESDIR      := ./resources
-IDEASDIR    := ./ideas
-TESTDIR     := ./test
-DOCDIR      := ./doc
-DOCUMENTSDIR:= ./documents
+SRCDIR        := ./src
+INCDIR        := ./include
+BUILDDIR      := ./build
+TARGETDIR     := ./bin
+RESDIR        := ./resources
+IDEASDIR      := ./ideas
+TESTDIR       := ./test
+DOCDIR        := ./doc
+DOCUMENTSDIR  := ./documents
+
+
 
 SRCEXT      := cpp
 DEPEXT      := d
 OBJEXT      := o
 
 #Flags, Libraries and Includes
-CXXFLAGS    := --std=c++11#-Xpreprocessor -fopenmp #-lomp -Wall #-fopenmp -Wall -O3 -g
-LIB         := -lhdf5 -lboost_serialization -lboost_filesystem -lboost_system#-fopenmp -lm -larmadillo
-INC         := -I$(INCDIR) -I/usr/local/Headeronly/HighFive/include -I/usr/local/Headeronly/cxxopts  -I/usr/local/include
+CXXFLAGS    := -std=c++11 -O3 #-Xpreprocessor -fopenmp #-lomp -Wall #-fopenmp -Wall -O3 -g
+LIB         := -L$(HDF5DIR)/lib -lhdf5 -lboost_serialization -lboost_filesystem -lboost_system#-fopenmp -lm -larmadillo
+INC         := -I$(INCDIR) -I$(HEADERONLYDIR)/HighFive/include -I$(HEADERONLYDIR)/cxxopts  -I/usr/local/include
 INCDEP      := -I$(INC)
 
 #Source and Object files

@@ -7,12 +7,13 @@
 
 int main(int argc, char *argv[]) {
 
-    cxxopts::Options options("ParticleDistributor",
+    cxxopts::Options options("bin/runner",
                              "Generating HDF5 file with initial particle distribution for N-Body and SPH simulation.");
 
     std::vector<std::string> availableDistributionTypes = { Plummer::name, SingleSpiral::name, Kepler::name,
-                                                            MultiplePlummer::name, KeplerTorus::name,
-                                                            CompoundGalaxy::name };
+	MultiplePlummer::name, KeplerTorus::name };
+                                                            //,CompoundGalaxy::name };
+							    // TODO: remove the above line when compound_galaxy distributor is working
     std::stringstream availableDistributionTypesHelp;
 
     availableDistributionTypesHelp << "(";
